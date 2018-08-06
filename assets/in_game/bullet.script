@@ -1,0 +1,56 @@
+go.property("owner", hash("player")) -- self.owner
+go.property("speed", 500) -- self.speed
+go.property("rot_speed", 2)
+
+function init(self)
+	print "bullet created"
+	self.rot = go.get_rotation()
+	self.pos = go.get_position()
+	self.pos.z = 0.2 -- because player & enemy obj position.z is 0.1 [default]
+	if self.owner == hash("enemy") then
+		self.dir = -1
+		-- setting bullet sprite & z order
+		if area_level == 2 then
+			sprite.play_flipbook("#sprite","p_enemy2_1")
+		elseif area_level == 3 then
+			--
+		elseif area_level == 4 then
+			self.pos.z = 0.05
+		elseif area_level == 5 then
+			sprite.play_flipbook("#sprite","p_enemy2_1")
+			self.pos.z = 0.05
+		end
+	else
+		if self.owner ~= hash("player") then -- if not player and not enemy
+			print "undefined owner, set to player"
+		end
+		self.dir = 1
+	end
+end
+
+function update(self, dt)
+	self.pos.x = self.pos.x + self.dir * self.speed * dt
+	go.set_position(self.pos)
+	
+	-- do rotation, (-dir) to make rotation properly
+	self.rot.z = self.rot.z + (-self.dir) * self.rot_speed * dt
+	go.set_rotation(vmath.quat_rotation_z(self.rot.z))
+	-- over 360deg or -360deg, then reset to 0deg (in radian)
+	if self.rot.z > (math.pi * 2) and self.rot.z < -(math.pi * 2) then
+		self.rot.z = 0 -- reset rotation when 2 phi
+	end
+end
+
+function on_message(self, message_id, message, sender)
+	-- TODO: manipulate per level in here to setting enemy behaviour
+	if message_id == hash("collision_response") then
+		if message.group == hash("enemy") then
+			print "collided with enemy"
+			msg.post("/enemy#script", "damaged_anim")
+		else
+			print "collided with player"
+			msg.post("/player#script", "damaged_anim")
+		end
+		go.delete()
+	end
+end

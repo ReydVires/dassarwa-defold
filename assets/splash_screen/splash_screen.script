@@ -1,0 +1,20 @@
+local function resumeAfterSeconds(seconds, co)
+	go.animate(go.get_id(), "scale.z", go.PLAYBACK_ONCE_FORWARD, 1, go.EASING_LINEAR, 0.1, seconds, function()
+		print("called after "..seconds.." sec")
+		coroutine.resume(co)
+	end)
+end
+
+function init(self)
+	msg.post("/go_splash_screen#fading", "do_fade_in", { screen = "main_menu" })
+	--sound.play(url)
+	-- debug coroutine
+	local co = coroutine.create(function(data)
+		print ("test coroutine1 ")
+		coroutine.yield()
+		print ("test coroutine2 ",data)
+	end)
+	resumeAfterSeconds(1, co)
+	print(coroutine.resume(co, 123))
+	print "PASSED"
+end

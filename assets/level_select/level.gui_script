@@ -1,0 +1,56 @@
+local Button = require "main/gui_button"
+
+local function create_scale_button(node, callback)
+	return Button.create(node, callback, "scale2")
+end
+
+local function set_area_enable(enable)
+	for i = 1, 3 do -- idx of area box
+		local node = gui.get_node("area"..i.."_box")
+		gui.set_enabled(node, enable)
+	end
+end
+
+function init(self)
+	msg.post(".", "acquire_input_focus")
+	msg.post("/go_level#fading", "zero_alpha")
+	self.area_text = gui.get_node("area_text")
+	self.area_select = {
+		create_scale_button(gui.get_node("area1_box"), function()
+			set_area_enable(false)
+			gui.set_enabled(self.area_text, true)
+			gui.set_text(self.area_text, "-SWAMP-")
+			msg.post("level:/go_pick_level#level_area", "level_btn_enable")
+			msg.post(".", "release_input_focus")
+		end)
+	}
+	msg.post("#", "arena_text_disable")
+	-- TODO: when tap from menu screen, level screen is coming from right to left
+end
+
+function on_input(self, action_id, action)
+	if (action_id == hash("esc") or action_id == hash("back")) and action.pressed then
+		msg.post("loader:/go_loader#script", "goto_main_menu_via_level")
+		print "go back to main menu"
+		sound.play("loader:/go_audio#cancel")
+		msg.post("main_menu:/go_main_menu#main_menu", "update_score_text") -- update score
+		msg.post(".", "release_input_focus")
+	end
+	if action_id == hash("touch") then -- make sure it'snt passing pick level instantly
+		if area >= 1 then -- setting area pick
+			self.area_select[1].on_input(action_id, action)
+		end
+	end
+end
+
+function on_message(self, message_id, message, sender)
+	-- @from level_area,gui_script
+	if message_id == hash("arena_enable") then
+		msg.post(".", "acquire_input_focus")
+		set_area_enable(true)
+	end
+	-- @from this script
+	if message_id == hash("arena_text_disable") then
+		gui.set_enabled(self.area_text, false)
+	end
+end

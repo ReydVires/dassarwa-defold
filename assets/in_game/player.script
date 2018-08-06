@@ -1,0 +1,44 @@
+go.property("player_max_hp", 3)
+
+function init(self)
+	msg.post("/player_bullet#sprite", "disable")
+	-- setting hp player each level
+	if area_level == 4 or area_level == 5 then
+		self.player_max_hp = self.player_max_hp + 1
+	end
+	msg.post("/go_in_game#in_game", "set_player_hp", {hp = self.player_max_hp})
+	print(username," HP's :",self.player_max_hp)
+end
+
+function on_message(self, message_id, message, sender)
+	-- @from this script
+	if message_id == hash("attack_anim") then
+		print "player attacking"
+		local pos = go.get_position()
+		msg.post("/player_bullet#sprite", "enable")
+		go.animate(go.get_id(), "position.x", go.PLAYBACK_ONCE_FORWARD, 120, go.EASING_OUTBACK, 0.25)
+		go.animate(go.get_id(), "scale.z", go.PLAYBACK_ONCE_FORWARD, 1, go.EASING_LINEAR, 0.1, 0.12, function()
+			msg.post("/player_bullet#sprite", "disable")
+		end)
+		go.animate(go.get_id(), "position.x", go.PLAYBACK_ONCE_FORWARD, pos.x, go.EASING_LINEAR, 0.3, 0.26)
+	end
+	-- @from bullet.script
+	if message_id == hash("damaged_anim") then
+		msg.post("loader:/go_audio#damaged", "play_sound")
+		local pos = go.get_position()
+		sprite.set_constant("#sprite", "tint", vmath.vector4(1,0.3,0.3,0.8))
+		go.animate(go.get_id(), "position.x", go.PLAYBACK_ONCE_FORWARD, 105, go.EASING_OUTBACK, 0.3, 0, function()
+			sprite.reset_constant("#sprite", "tint")
+		end)
+		go.animate(go.get_id(), "position.x", go.PLAYBACK_ONCE_FORWARD, pos.x, go.EASING_LINEAR, 0.45, 0.31)
+		msg.post("/go_in_game#in_game", "player_hp_anim")
+		-- debug to disable collision
+		--msg.post("player#collisionobject", "disable")
+	end
+	-- @from in_game.gui_script
+	if message_id == hash("do_fire") then
+		msg.post("#", "attack_anim")
+		factory.create("/player_bullet#factory",go.get_world_position("/player_bullet"))
+		print "Player FIRE!"
+	end
+end

@@ -1,0 +1,127 @@
+bg_music_isPlay = false
+local Button = require "main/gui_button"
+
+local function create_scale_button(node, callback)
+	return Button.create(node, callback, "scale2")
+end
+
+local function enable_star_level(level)
+	for i = 1, level do
+		local star_node = gui.get_node("star_box"..i)
+		gui.set_enabled(star_node, true)
+	end
+end
+
+local function disable_star_level()
+	for i = 1, 5 do
+		local star_node = gui.get_node("star_box"..i)
+		gui.set_enabled(star_node, false)
+	end
+end
+
+local function set_levelbtn_enable(enable)
+	for i = 1, 5 do -- idx of level btn
+		local node = gui.get_node("level"..i.."/btn_node")
+		gui.set_enabled(node, enable)
+		-- setup button animation in level select
+		if i == 2 and (area_max_level >= i) then
+			gui.play_flipbook(node, hash("Level"..i))
+		end
+		if i == 3 and (area_max_level >= i) then
+			gui.play_flipbook(node, hash("Level"..i))
+		end
+		if i == 4 and (area_max_level >= i) then
+			gui.play_flipbook(node, hash("Level"..i))
+		end
+		if i == 5 and (area_max_level >= i) then
+			gui.play_flipbook(node, hash("Level"..i))
+		end
+		enable_star_level(area_max_level-1)
+	end
+end
+
+local function level_btn_action()
+	msg.post("/go_level#fading", "do_fade_out", { screen = "in_game", release_input = true })
+	print ("goto in game, level: ", area_level)
+	msg.post("loader:/go_audio#bg_menu", "stop_sound")
+end
+
+function init(self)
+	local do_once_level_debug = false
+	self.level_btn = {
+		create_scale_button(gui.get_node("level1/btn_node"), function()
+			-- purposing to leap level with level debug properties
+			if do_once_level_debug then
+				area_level = 1
+			else
+				msg.post("loader:/go_loader#script", "set_level_debug")
+				do_once_level_debug = true
+				print "DO ONCE LEVEL DEBUG"
+			end
+			level_btn_action()
+		end),
+		create_scale_button(gui.get_node("level2/btn_node"), function()
+			area_level = 2
+			level_btn_action()
+		end),
+		create_scale_button(gui.get_node("level3/btn_node"), function()
+			area_level = 3
+			level_btn_action()
+		end),
+		create_scale_button(gui.get_node("level4/btn_node"), function()
+			area_level = 4
+			level_btn_action()
+		end),
+		create_scale_button(gui.get_node("level5/btn_node"), function()
+			area_level = 5
+			level_btn_action()
+		end)
+	}
+	for i, btn in ipairs(self.level_btn) do
+		btn.set_sound("loader:/go_audio#click2")
+	end
+	set_levelbtn_enable(false)
+	disable_star_level()
+	msg.post("/go_level#fading", "zero_alpha")
+end
+
+function on_input(self, action_id, action)
+	if action_id == hash("touch") then -- make sure it'snt passing in_game instantly
+		self.level_btn[1].on_input(action_id, action)
+		if area_max_level >= 2 then
+			self.level_btn[2].on_input(action_id, action)
+		end
+		if area_max_level >= 3 then
+			self.level_btn[3].on_input(action_id, action)
+		end
+		if area_max_level >= 4 then
+			self.level_btn[4].on_input(action_id, action)
+		end
+		if area_max_level >= 5 then
+			self.level_btn[5].on_input(action_id, action)
+		end
+	end
+	
+	if (action_id == hash("esc") or action_id == hash("back")) and action.pressed then
+		msg.post("level:/go_level#level", "arena_text_disable")
+		sound.play("loader:/go_audio#cancel")
+		msg.post("#", "level_btn_disable")
+	end
+end
+
+function on_message(self, message_id, message, sender)
+	-- @from level.gui_script
+	if message_id == hash("level_btn_enable") then
+		msg.post(".", "acquire_input_focus")
+		set_levelbtn_enable(true)
+		enable_star_level(area_max_level-1)
+		print("max_level: ",area_max_level,"| last area_level: ",area_level,"| area unlocked: ",area)
+	end
+	-- @from this script
+	if message_id == hash("level_btn_disable") then
+		msg.post("level:/go_level#level", "arena_enable")
+		set_levelbtn_enable(false)
+		disable_star_level()
+		msg.post(".", "release_input_focus")
+	end
+end

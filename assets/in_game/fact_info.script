@@ -1,0 +1,27 @@
+local data_infos = {}
+function init(self)
+	table.insert(data_infos, "DID YOU KNOW?!\n"..
+	"The number 0,1,2,3,4,5,6,7,8,9 are known\n"..
+	"as Arabic-Western Numbers.")
+	table.insert(data_infos, "DID YOU KNOW?!\n"..
+	"Johannes Widmann (1489) was the first to\n"..
+	"introduce the symbols (+) and (-).")
+	table.insert(data_infos, "DID YOU KNOW?!\n"..
+	"The number '0' is the only number that has\n"..
+	"many names such as zero, nil, naught,\n"..
+	"nought, zip and zilch.")
+	table.insert(data_infos, "DID YOU KNOW?!\n"..
+	"1 googol = 10.000.000.000.000.000.000.000.000\n"..
+	".000.000.000.000.000.000.000.000.000.000.000\n"..
+	".000.000.000.000.000.000.000.000.000.000.000\n"..
+	".000.000.000.- (hundred zero's)")
+	table.insert(data_infos, "DID YOU KNOW?!\n"..
+	"Mathematics comes from Greek, 'máthêma',\n"..
+	"which means learning or science.")
+end
+
+function on_message(self, message_id, message, sender)
+	if message_id == hash("get_fact_info") then
+		msg.post("/go_in_game#in_game", "set_fact_info", {info = data_infos[message.index]})
+	end
+end

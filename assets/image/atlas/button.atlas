@@ -1,0 +1,84 @@
+images {
+  image: "/assets/image/button/Button_Hijau.png"
+}
+images {
+  image: "/assets/image/button/Button_Hijau2.png"
+}
+images {
+  image: "/assets/image/button/Button_Kuning.png"
+}
+images {
+  image: "/assets/image/button/Button_Kuning2.png"
+}
+images {
+  image: "/assets/image/button/Button_Merah.png"
+}
+images {
+  image: "/assets/image/button/Button_Merah2.png"
+}
+images {
+  image: "/assets/image/button/Button_Ungu.png"
+}
+images {
+  image: "/assets/image/button/Button_Ungu2.png"
+}
+images {
+  image: "/assets/image/Button_Menu.png"
+}
+images {
+  image: "/assets/image/Button_Next.png"
+}
+images {
+  image: "/assets/image/Button_Restart.png"
+}
+images {
+  image: "/assets/image/Button_Restart2.png"
+}
+images {
+  image: "/assets/image/Button_Back.png"
+}
+images {
+  image: "/assets/image/Button_Toko.png"
+}
+images {
+  image: "/assets/image/Button_Play.png"
+}
+images {
+  image: "/assets/image/Button_Credit.png"
+}
+images {
+  image: "/assets/image/black_button2.png"
+}
+images {
+  image: "/assets/image/black_button.png"
+}
+images {
+  image: "/assets/image/Level1.png"
+}
+images {
+  image: "/assets/image/Level2.png"
+}
+images {
+  image: "/assets/image/Level3.png"
+}
+images {
+  image: "/assets/image/Level4.png"
+}
+images {
+  image: "/assets/image/Level5.png"
+}
+images {
+  image: "/assets/image/LockLevel.png"
+}
+images {
+  image: "/assets/image/Button_Next2.png"
+}
+images {
+  image: "/assets/image/Button_Menu2.png"
+}
+images {
+  image: "/assets/image/Star.png"
+}
+margin: 2
+extrude_borders: 0
+inner_padding: 0

@@ -1,0 +1,181 @@
+-- Global variable
+username = "TEV"
+area_max_level = 1
+area_level = 1
+area = 1
+enemies = {
+	"genren",
+	"tele zo",
+	"algosaurus",
+	"glade",
+	"overheat"
+}
+scores = {0,0,0,0,0}
+
+go.property("level_debug", 1)
+local filename = sys.get_save_file("dassarwa", "save_data")
+local volume = require "main/volume"
+
+local function load_in_game(self)
+	print "activating in_game"
+	msg.post("/go_loader#proxy_in_game", "load")
+end
+
+local function unload_in_game(self)
+	print "unload in_game"
+	msg.post("/go_loader#proxy_in_game", "unload")
+	return true
+end
+
+local function load_level(self, is_enable)
+	if not is_enable then
+		print "activating level"
+		msg.post("/go_loader#proxy_level", "load")
+	else
+		msg.post("/go_loader#proxy_level", "enable")
+		msg.post("level:/go_level", "acquire_input_focus")
+		print "enable the level"
+	end
+end
+
+local function unload_level(self, is_disable)
+	if not is_disable then
+		msg.post("/go_loader#proxy_level", "unload")
+		print "unload level"
+	else
+		msg.post("/go_loader#proxy_level", "disable")
+		print "disable level"
+	end
+end
+
+local function load_main_menu(self)
+	print "activating main_menu"
+	msg.post("/go_loader#proxy_main_menu", "load")
+end
+
+local function unload_main_menu(self, is_disable)
+	if not is_disable then
+		msg.post("/go_loader#proxy_main_menu", "unload")
+		print "unload main_menu"
+	else
+		msg.post("/go_loader#proxy_main_menu", "disable")
+		print "disable main_menu"
+	end
+end
+
+local function load_splash_screen(self)
+	print "activating splash_screen"
+	msg.post("/go_loader#proxy_splash_screen", "load")
+end
+
+local function unload_splash_screen(self)
+	print "unload splash_screen"
+	msg.post("/go_loader#proxy_splash_screen", "unload")
+end
+
+local function load_data(self)
+	local data_loaded = sys.load(filename, "save_data")
+	pprint(data_loaded)
+	if not next(data_loaded) then
+		print "no gamedata loaded"
+	else
+		username = data_loaded.username
+		area_level = data_loaded.last_level
+		area_max_level = data_loaded.max_level
+		scores = data_loaded.scores
+		print "gamedata loaded"
+	end
+end
+
+local function saving_data(self)
+	local data_saved = {
+		username = username,
+		last_level = area_level,
+		max_level = area_max_level,
+		scores = scores
+	}
+	sys.save(filename, data_saved)
+	print "saved new gamedata"
+end
+
+local function delete_data(self)
+	local check = sys.load(filename)
+	if not next(check) then
+		print "no data will be deleted"
+	else
+		sys.save(filename, {})
+		if not next(sys.load(filename)) then
+			print "delete data success"
+		else
+			print "delete data failed"
+		end
+	end
+end
+
+function init(self)
+	self.volume_master = 1
+	--sound.set_group_gain("master", self.volume_master)
+	load_data(self)
+	math.randomseed(socket.gettime()) -- to make sure there is random generate
+	msg.post(".", "acquire_input_focus")
+	print "init from loader.script"
+	load_splash_screen(self)
+end
+
+function on_message(self, message_id, message, sender)
+	-- @from level.gui_script
+	-- do_debug is handling to do this once
+	if message_id == hash("set_level_debug") and not self.do_debug then
+		print("do level debugging: ", self.level_debug)
+		area_level = self.level_debug
+		self.do_debug = true
+	end
+	if message_id == hash("goto_main_menu") then -- from: splash_screen.script
+		unload_splash_screen(self)
+		load_main_menu(self)
+	elseif message_id == hash("goto_level") then -- from: main_menu.gui_script
+		if not self.level_loaded then -- make sure that level loaded once
+			load_level(self)
+			self.level_loaded = true
+		else
+			load_level(self, true)
+		end
+		unload_main_menu(self, true) -- do disable
+	elseif message_id == hash("goto_main_menu_via_level") then -- from: level.gui_script
+		msg.post("/go_loader#proxy_main_menu", "enable")
+		msg.post("main_menu:/go_main_menu", "acquire_input_focus")
+		unload_level(self, true)
+	elseif message_id == hash("goto_in_game") then -- from: level.gui_script
+		unload_level(self, true)
+		load_in_game(self)
+	elseif message_id == hash("goto_level_via_in_game") then -- from: in_game.gui_script
+		unload_in_game(self)
+		load_level(self, true)
+	elseif message_id == hash("restart_game") then -- @from fading.gui_script
+		self.restart = true
+		unload_in_game(self)
+	elseif message_id == hash("proxy_loaded") then -- from: this script
+		msg.post(sender, "init")
+		msg.post(sender, "enable")
+		print(sender," activated")
+		print("GC: ",collectgarbage("count"))
+	end
+	if message_id == hash("proxy_unloaded") then
+		if sender.fragment == hash("proxy_in_game") and self.restart then
+			load_in_game(self)
+			print "do restart game"
+			self.restart = false
+		end
+	end
+	if message_id == hash("save_data") then
+		saving_data(self)
+	end
+	if message_id == hash("delete_data") then
+		delete_data(self)
+	end
+end
+
+function on_input(self, action_id, action)
+	-- volume control
+	volume.input_control(self, action_id, action)
+end

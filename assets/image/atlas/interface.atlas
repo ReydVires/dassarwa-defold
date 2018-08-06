@@ -1,0 +1,79 @@
+images {
+  image: "/assets/image/Logo Opening.png"
+}
+images {
+  image: "/assets/image/background.png"
+}
+images {
+  image: "/assets/image/Dassarwa Game Text.png"
+}
+images {
+  image: "/assets/image/tap to play.png"
+}
+images {
+  image: "/assets/image/Time place.png"
+}
+images {
+  image: "/assets/image/Button_Credit.png"
+}
+images {
+  image: "/assets/image/Background_Game.png"
+}
+images {
+  image: "/assets/image/Bar Health.png"
+}
+images {
+  image: "/assets/image/Health.png"
+}
+images {
+  image: "/assets/image/Box.png"
+}
+images {
+  image: "/assets/image/Berhasil.png"
+}
+images {
+  image: "/assets/image/Failed.png"
+}
+images {
+  image: "/assets/image/About.png"
+}
+images {
+  image: "/assets/image/ComingSoon.png"
+}
+images {
+  image: "/assets/image/PilihArea1.png"
+}
+animations {
+  id: "mascot"
+  images {
+    image: "/assets/image/Tank_mascot/Tank_1.png"
+  }
+  images {
+    image: "/assets/image/Tank_mascot/Tank_2.png"
+  }
+  images {
+    image: "/assets/image/Tank_mascot/Tank_3.png"
+  }
+  images {
+    image: "/assets/image/Tank_mascot/Tank_4.png"
+  }
+  images {
+    image: "/assets/image/Tank_mascot/Tank_5.png"
+  }
+  images {
+    image: "/assets/image/Tank_mascot/Tank_6.png"
+  }
+  images {
+    image: "/assets/image/Tank_mascot/Tank_7.png"
+  }
+  images {
+    image: "/assets/image/Tank_mascot/Tank_8.png"
+  }
+  playback: PLAYBACK_LOOP_FORWARD
+  fps: 7
+  flip_horizontal: 0
+  flip_vertical: 0
+}
+margin: 2
+extrude_borders: 0
+inner_padding: 0

@@ -1,0 +1,113 @@
+go.property("enemy_max_hp", 3)
+
+function init(self)
+	msg.post("#", "idle_anim") -- set animation
+	-- setup enemy per-level
+	-- TODO: set bullet in bottom-layer for some enemy
+	-- TODO: set enemy bullet spawn
+	local enemy_name = string.upper(enemies[area_level])
+	local pos = go.get_position()
+	local bullet_pos = go.get_position("/enemy_bullet")
+	pos.y = 232 -- for default purpose
+	bullet_pos.x = -41
+	bullet_pos.y = -33 -- default pos
+	if enemies[area_level] == "genren" then -- level 1
+		-- default
+	elseif enemies[area_level] == "tele zo" then -- level 2
+		pos.y = 195 -- set manually in editor
+		bullet_pos.x = -55
+		bullet_pos.y = 40
+		self.enemy_max_hp = 4
+	elseif enemies[area_level] == "algosaurus" then -- level 3
+		pos.y = 257 -- set manually in editor
+		bullet_pos.x = -97
+		bullet_pos.y = -21
+		self.enemy_max_hp = 5
+	elseif enemies[area_level] == "glade" then -- level 4
+		pos.y = 250 -- set manually in editor
+		bullet_pos.x = -71
+		self.enemy_max_hp = 6
+	elseif enemies[area_level] == "overheat" then -- level 5
+		pos.y = 260 -- set manually in editor
+		bullet_pos.x = -145
+		bullet_pos.y = 2
+		self.enemy_max_hp = 7
+	end
+	msg.post("/go_in_game#in_game", "set_enemy_name", {name = enemy_name})
+	go.set_position(vmath.vector3(bullet_pos.x, bullet_pos.y, bullet_pos.z), go.get_id("/enemy_bullet"))
+	go.set_position(pos)
+	msg.post("/go_in_game#in_game", "set_enemy_hp", {hp = self.enemy_max_hp})
+end
+
+local function change_enemy(self)
+	if area_level + 1 <= #enemies then
+		-- setup enemy change & set max level that can pick
+		if area_level == 1 and area_max_level == 1 then
+			area_max_level = area_level + 1
+		elseif area_level == 2 and area_max_level == 2 then
+			area_max_level = area_level + 1
+		elseif area_level == 3 and area_max_level == 3 then
+			area_max_level = area_level + 1
+		elseif area_level == 4 and area_max_level == 4 then
+			area_max_level = area_level + 1
+		end
+		print "enemy change"
+	else
+		-- handler debug for last level to star
+		if area_max_level == 5 and area_level == 5 then
+			area_max_level = 6
+			area = 2
+			print "game end"
+		end
+		print "no more enemy"
+	end
+	msg.post("loader:/go_loader#script", "save_data") -- do save data
+end
+
+function on_message(self, message_id, message, sender)
+	-- @from in_game.gui_script
+	if message_id == hash("attack_anim") then
+		sprite.play_flipbook("#sprite", "enemy_"..enemies[area_level].."_attack", function()
+			msg.post("#", "idle_anim")
+		end)
+		-- for area_level 3 and 4, do with animate in attack
+		if enemies[area_level] == "algosaurus" or enemies[area_level] == "glade" or
+		enemies[area_level] == "genren" then
+			go.animate(go.get_id(), "position.x", go.PLAYBACK_ONCE_PINGPONG, 665, go.EASING_LINEAR, 0.5)
+		end
+		print(" >> enemy_"..enemies[area_level].."_attack")
+	end
+	if message_id == hash("idle_anim") then
+		sprite.play_flipbook("#sprite", "enemy_"..enemies[area_level].."_idle")
+		print(" >> enemy_"..enemies[area_level].."_idle")
+		-- another way to change sprite
+		--msg.post("#sprite", "play_animation", {id = hash("enemy_"..enemies[area_level].."_idle")})
+	end
+	-- @from bullet.script
+	if message_id == hash("damaged_anim") then
+		msg.post("loader:/go_audio#damaged2", "play_sound")
+		local pos = go.get_position()
+		go.animate("#sprite", "tint", go.PLAYBACK_ONCE_FORWARD, vmath.vector4(1,0.3,0.3,0.8), go.EASING_LINEAR, 0.2)
+		go.animate(go.get_id(), "position.x", go.PLAYBACK_ONCE_FORWARD, 660, go.EASING_OUTBACK, 0.3, 0, function()
+			go.animate("#sprite", "tint", go.PLAYBACK_ONCE_FORWARD, vmath.vector4(1,1,1,1), go.EASING_OUTBACK, 0.15)
+			go.animate(go.get_id(), "position.x", go.PLAYBACK_ONCE_FORWARD, pos.x, go.EASING_LINEAR, 0.45)
+		end)
+		msg.post("/go_in_game#in_game", "enemy_hp_anim")
+	end
+	-- @from in_game.gui_script
+	if message_id == hash("level_up") then
+		change_enemy(self)
+	end
+	-- @from in_game.gui_script
+	if message_id == hash("next_level") then
+		if area_level + 1 <= area_max_level then
+			area_level = area_level + 1
+		end
+	end
+	-- @from in_game.gui_script
+	if message_id == hash("do_fire") then
+		msg.post("#", "attack_anim")
+		factory.create("/enemy_bullet#factory",go.get_world_position("/enemy_bullet"))
+		print "Enemy FIRE!"
+	end
+end

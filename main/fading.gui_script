@@ -1,0 +1,74 @@
+local function fade_out(self, node, immediate)
+	print "do fade_out"
+	local delay = 0.8
+	if immediate then
+		delay = 0
+	end
+	gui.animate(node, "color.w", 1, gui.EASING_OUTSINE, 0.5, delay, function() 
+		print ("Animate fading end. Goto screen: ",self.goto_screen)
+		msg.post("#", self.goto_screen)
+	end)
+end
+
+function init(self)
+	self.node = gui.get_node("fade_box")
+	gui.set_render_order(1) -- make sure its the top of renderer
+end
+
+local function fade_in(self, auto_fade_off)
+	if auto_fade_off then
+		gui.animate(self.node, "color.w", 0, gui.EASING_INSINE, 0.6, 0, fade_out, gui.PLAYBACK_ONCE_FORWARD)
+	else
+		gui.animate(self.node, "color.w", 0, gui.EASING_INSINE, 0.6, 0, function() 
+			print "Animate fading end"
+			msg.post(self.sender_url, "acquire_input_focus")
+		end)
+	end
+end
+
+function on_message(self, message_id, message, sender)
+	-- @from level.gui_script
+	-- make black image alpha become 0, result: black screen
+	if message_id == hash("zero_alpha") then
+		gui.animate(self.node, "color.w", 0, gui.EASING_INSINE, 0)
+	end
+	-- @from: splash_screen.script
+	if message_id == hash("do_fade_in") then
+		if message.screen then -- if there is screen to go
+			self.goto_screen = message.screen
+			fade_in(self, true)
+		else
+			fade_in(self)
+			self.sender_url = sender
+		end
+	end
+	if message_id == hash("do_fade_out") then
+		self.goto_screen = message.screen
+		fade_out(self, self.node, true)
+		if message.release_input then
+			msg.post(sender, "release_input_focus")
+			print "input released from do_fade_out"
+		end
+	end
+	-- @from level.gui_script
+	if message_id == hash("level_via_in_game") then
+		print "call level via in_game"
+		msg.post("loader:/go_loader#script", "goto_level_via_in_game")
+	end
+	-- @from level.gui_script
+	if message_id == hash("in_game") then
+		print "call in_game from level"
+		msg.post("loader:/go_loader#script", "goto_in_game")
+		msg.post("level:/go_level#fading", "zero_alpha")
+	end
+	-- @from this script
+	if message_id == hash("main_menu") then
+		print "call main_menu from splash"
+		msg.post("loader:/go_loader#script", "goto_main_menu")
+	end
+	-- @from: level.gui_script
+	if message_id == hash("restart_in_game") then
+		print "call in_game from in_game"
+		msg.post("loader:/go_loader#script", "restart_game")
+	end
+end

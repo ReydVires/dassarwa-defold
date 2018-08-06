@@ -1,0 +1,287 @@
+animations {
+  id: "enemy_genren_idle"
+  images {
+    image: "/assets/image/enemy_genren/Enemy1_Idle1.png"
+  }
+  images {
+    image: "/assets/image/enemy_genren/Enemy1_Idle2.png"
+  }
+  images {
+    image: "/assets/image/enemy_genren/Enemy1_Idle3.png"
+  }
+  images {
+    image: "/assets/image/enemy_genren/Enemy1_Idle4.png"
+  }
+  images {
+    image: "/assets/image/enemy_genren/Enemy1_Idle5.png"
+  }
+  images {
+    image: "/assets/image/enemy_genren/Enemy1_Idle6.png"
+  }
+  playback: PLAYBACK_LOOP_FORWARD
+  fps: 7
+  flip_horizontal: 0
+  flip_vertical: 0
+}
+animations {
+  id: "player_idle"
+  images {
+    image: "/assets/image/player/player_idle1.png"
+  }
+  images {
+    image: "/assets/image/player/player_idle2.png"
+  }
+  images {
+    image: "/assets/image/player/player_idle3.png"
+  }
+  images {
+    image: "/assets/image/player/player_idle4.png"
+  }
+  playback: PLAYBACK_LOOP_FORWARD
+  fps: 4
+  flip_horizontal: 0
+  flip_vertical: 0
+}
+animations {
+  id: "enemy_genren_attack"
+  images {
+    image: "/assets/image/enemy_genren/enemy1_nembak1.png"
+  }
+  playback: PLAYBACK_ONCE_FORWARD
+  fps: 10
+  flip_horizontal: 0
+  flip_vertical: 0
+}
+animations {
+  id: "enemy_tele zo_idle"
+  images {
+    image: "/assets/image/enemy_telezo/enemy2_idle_1.png"
+  }
+  images {
+    image: "/assets/image/enemy_telezo/enemy2_idle_2.png"
+  }
+  images {
+    image: "/assets/image/enemy_telezo/enemy2_idle_3.png"
+  }
+  images {
+    image: "/assets/image/enemy_telezo/enemy2_idle_4.png"
+  }
+  images {
+    image: "/assets/image/enemy_telezo/enemy2_idle_5.png"
+  }
+  images {
+    image: "/assets/image/enemy_telezo/enemy2_idle_6.png"
+  }
+  images {
+    image: "/assets/image/enemy_telezo/enemy2_idle_7.png"
+  }
+  images {
+    image: "/assets/image/enemy_telezo/enemy2_idle_8.png"
+  }
+  playback: PLAYBACK_LOOP_FORWARD
+  fps: 8
+  flip_horizontal: 0
+  flip_vertical: 0
+}
+animations {
+  id: "enemy_tele zo_attack"
+  images {
+    image: "/assets/image/enemy_telezo/enemy2_nembak_2.png"
+  }
+  images {
+    image: "/assets/image/enemy_telezo/enemy2_nembak_3.png"
+  }
+  images {
+    image: "/assets/image/enemy_telezo/enemy2_nembak_4.png"
+  }
+  images {
+    image: "/assets/image/enemy_telezo/enemy2_nembak_5.png"
+  }
+  images {
+    image: "/assets/image/enemy_telezo/enemy2_nembak_6.png"
+  }
+  playback: PLAYBACK_ONCE_FORWARD
+  fps: 8
+  flip_horizontal: 0
+  flip_vertical: 0
+}
+animations {
+  id: "enemy_algosaurus_attack"
+  images {
+    image: "/assets/image/enemy_algosaurus/Armature_algosaurus_00.png"
+  }
+  playback: PLAYBACK_ONCE_FORWARD
+  fps: 7
+  flip_horizontal: 0
+  flip_vertical: 0
+}
+animations {
+  id: "enemy_algosaurus_idle"
+  images {
+    image: "/assets/image/enemy_algosaurus/Armature_algosaurus_00.png"
+  }
+  images {
+    image: "/assets/image/enemy_algosaurus/Armature_algosaurus_01.png"
+  }
+  images {
+    image: "/assets/image/enemy_algosaurus/Armature_algosaurus_02.png"
+  }
+  images {
+    image: "/assets/image/enemy_algosaurus/Armature_algosaurus_03.png"
+  }
+  images {
+    image: "/assets/image/enemy_algosaurus/Armature_algosaurus_04.png"
+  }
+  images {
+    image: "/assets/image/enemy_algosaurus/Armature_algosaurus_05.png"
+  }
+  images {
+    image: "/assets/image/enemy_algosaurus/Armature_algosaurus_06.png"
+  }
+  images {
+    image: "/assets/image/enemy_algosaurus/Armature_algosaurus_07.png"
+  }
+  images {
+    image: "/assets/image/enemy_algosaurus/Armature_algosaurus_08.png"
+  }
+  images {
+    image: "/assets/image/enemy_algosaurus/Armature_algosaurus_09.png"
+  }
+  images {
+    image: "/assets/image/enemy_algosaurus/Armature_algosaurus_10.png"
+  }
+  images {
+    image: "/assets/image/enemy_algosaurus/Armature_algosaurus_11.png"
+  }
+  images {
+    image: "/assets/image/enemy_algosaurus/Armature_algosaurus_12.png"
+  }
+  playback: PLAYBACK_LOOP_FORWARD
+  fps: 7
+  flip_horizontal: 0
+  flip_vertical: 0
+}
+animations {
+  id: "enemy_glade_idle"
+  images {
+    image: "/assets/image/enemy_glade/Armature_glade_01.png"
+  }
+  images {
+    image: "/assets/image/enemy_glade/Armature_glade_02.png"
+  }
+  images {
+    image: "/assets/image/enemy_glade/Armature_glade_03.png"
+  }
+  images {
+    image: "/assets/image/enemy_glade/Armature_glade_04.png"
+  }
+  images {
+    image: "/assets/image/enemy_glade/Armature_glade_05.png"
+  }
+  images {
+    image: "/assets/image/enemy_glade/Armature_glade_06.png"
+  }
+  images {
+    image: "/assets/image/enemy_glade/Armature_glade_07.png"
+  }
+  images {
+    image: "/assets/image/enemy_glade/Armature_glade_08.png"
+  }
+  images {
+    image: "/assets/image/enemy_glade/Armature_glade_09.png"
+  }
+  images {
+    image: "/assets/image/enemy_glade/Armature_glade_10.png"
+  }
+  playback: PLAYBACK_LOOP_FORWARD
+  fps: 7
+  flip_horizontal: 0
+  flip_vertical: 0
+}
+animations {
+  id: "enemy_glade_attack"
+  images {
+    image: "/assets/image/enemy_glade/Armature_glade_01.png"
+  }
+  playback: PLAYBACK_ONCE_FORWARD
+  fps: 7
+  flip_horizontal: 0
+  flip_vertical: 0
+}
+animations {
+  id: "enemy_overheat_idle"
+  images {
+    image: "/assets/image/enemy_overheat/Armature_overheat_idle_01.png"
+  }
+  images {
+    image: "/assets/image/enemy_overheat/Armature_overheat_idle_02.png"
+  }
+  images {
+    image: "/assets/image/enemy_overheat/Armature_overheat_idle_03.png"
+  }
+  images {
+    image: "/assets/image/enemy_overheat/Armature_overheat_idle_04.png"
+  }
+  images {
+    image: "/assets/image/enemy_overheat/Armature_overheat_idle_05.png"
+  }
+  images {
+    image: "/assets/image/enemy_overheat/Armature_overheat_idle_06.png"
+  }
+  images {
+    image: "/assets/image/enemy_overheat/Armature_overheat_idle_07.png"
+  }
+  images {
+    image: "/assets/image/enemy_overheat/Armature_overheat_idle_08.png"
+  }
+  images {
+    image: "/assets/image/enemy_overheat/Armature_overheat_idle_09.png"
+  }
+  images {
+    image: "/assets/image/enemy_overheat/Armature_overheat_idle_10.png"
+  }
+  playback: PLAYBACK_LOOP_PINGPONG
+  fps: 7
+  flip_horizontal: 0
+  flip_vertical: 0
+}
+animations {
+  id: "enemy_overheat_attack"
+  images {
+    image: "/assets/image/enemy_overheat/Armature_overheat_shoot_01.png"
+  }
+  images {
+    image: "/assets/image/enemy_overheat/Armature_overheat_shoot_02.png"
+  }
+  images {
+    image: "/assets/image/enemy_overheat/Armature_overheat_shoot_03.png"
+  }
+  images {
+    image: "/assets/image/enemy_overheat/Armature_overheat_shoot_04.png"
+  }
+  images {
+    image: "/assets/image/enemy_overheat/Armature_overheat_shoot_05.png"
+  }
+  images {
+    image: "/assets/image/enemy_overheat/Armature_overheat_shoot_06.png"
+  }
+  images {
+    image: "/assets/image/enemy_overheat/Armature_overheat_shoot_07.png"
+  }
+  images {
+    image: "/assets/image/enemy_overheat/Armature_overheat_shoot_08.png"
+  }
+  images {
+    image: "/assets/image/enemy_overheat/Armature_overheat_shoot_09.png"
+  }
+  images {
+    image: "/assets/image/enemy_overheat/Armature_overheat_shoot_10.png"
+  }
+  playback: PLAYBACK_ONCE_FORWARD
+  fps: 12
+  flip_horizontal: 0
+  flip_vertical: 0
+}
+margin: 2
+extrude_borders: 0
+inner_padding: 0

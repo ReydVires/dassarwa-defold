@@ -1,0 +1,24 @@
+images {
+  image: "/assets/image/p_tambah.png"
+}
+images {
+  image: "/assets/image/p_bagi.png"
+}
+images {
+  image: "/assets/image/p_kali.png"
+}
+images {
+  image: "/assets/image/p_kurang.png"
+}
+images {
+  image: "/assets/image/Efek_TembakanPlayer.png"
+}
+images {
+  image: "/assets/image/p_enemy1_1.png"
+}
+images {
+  image: "/assets/image/p_enemy2_1.png"
+}
+margin: 2
+extrude_borders: 0
+inner_padding: 0

@@ -1,0 +1,127 @@
+go.property("timer", 9)
+local min_num = 1
+local max_num = 10
+
+local function rounding_number(self, number)
+	return math.floor(number * 10) * 0.10
+end
+
+local function set_range_operation(self)
+	if area_level == 1 then
+		self.pick = math.random(0,1) -- plus and minus btn
+	elseif area_level == 2 then
+		max_num = 15
+		self.pick = math.random(0,2) -- plus, minus, and multiply
+	elseif area_level == 3 then
+		max_num = 25
+		self.pick = math.random(0,3)
+	elseif area_level == 4 then
+		min_num = -10
+		max_num = 30
+		self.pick = math.random(0,3)
+	elseif area_level == 5 then
+		self.pick = math.random(0,3)
+		min_num = -15
+		max_num = 30
+	end
+end
+
+local function get_question(self)
+	print "<< generate new question >>"
+	set_range_operation(self)
+	local operand = {}
+	operand[1] = math.random(min_num,max_num)
+	operand[2] = math.random(min_num,max_num)
+	if area_level <= 3 and operand[1] < operand[2] then
+		print "recursive less-than called"
+		return get_question(self)
+	end
+	if (self.pick == 0 or self.pick == 1) and operand[2] == 0 then
+		print "pick handler num + or - with zero"
+		operand[2] = 1
+	end
+	if (self.pick == 2 or self.pick == 3) then
+		if (math.abs(operand[2]) == 1) then
+			print "pick handler num x or / with 1"
+			operand[2] = 2
+		end
+		if operand[1] == 0 then
+			print "handler: 0 mul num = 0 and 0 div num = 0"
+			operand[1] = 5
+		end
+		if self.pick == 3 and operand[2] == 0 then
+			print "handler num / 0 = infinity"
+			operand[2] = 1
+		end
+	end
+	if self.pick == 0 then -- for plus opr
+		if operand[1] == operand[2] and operand[2] == 2 then
+			print "number 2 .. 2 handler"
+			operand[1] = 7
+		end
+		print(operand[1]," + ",operand[2]," = ",operand[1]+operand[2])
+		self.quest = operand[1].." ... "..operand[2].." = "..operand[1]+operand[2]
+		return operand[1]+operand[2]
+	elseif self.pick == 1 then -- for min opr
+		if operand[1] == 4 and operand[2] == 2 then
+			print "number 4 .. 2 handler"
+			operand[2] = 1
+		end
+		print(operand[1]," - ",operand[2]," = ",operand[1]-operand[2])
+		self.quest = operand[1].." ... "..operand[2].." = "..operand[1]-operand[2]
+		return operand[1]-operand[2]
+	elseif self.pick == 2 then -- for mul opr
+		if (operand[1] == operand[2] and operand[2] == 2) or operand[2] == 1 or operand[1] == 4 or
+		(operand[1] == -2 and operand[2] == 2) then
+			print "number -2, 1, 2, or 4 ambiguous handler"
+			operand[2] = 3
+		end
+		print(operand[1]," * ",operand[2]," = ",operand[1]*operand[2])
+		self.quest = operand[1].." ... "..operand[2].." = "..operand[1]*operand[2]
+		return operand[1]*operand[2]
+	elseif self.pick == 3 then -- for div opr
+		if operand[2] == 7 or operand[2] == 1 or (operand[1] == 4 and operand[2] == 2) then -- jawaban n .. 1 adalah dikali
+			print "recursive div by 7 or 1 or (4 div 2) called"
+			return get_question(self)
+		end
+		local data
+		if math.abs(operand[1] - operand[2]) == 1 then
+			print "result 0.1 handler"
+			data = 0.1
+		else
+			data = rounding_number(self, operand[1]/operand[2])
+		end
+		print(operand[1]," / ",operand[2]," = ",data)
+		self.quest = operand[1].." ... "..operand[2].." = "..data
+		return data
+	end
+end
+
+function init(self)
+	print "greetings, from game.script"
+	msg.post("#", "reset_timer")
+end
+
+function on_message(self, message_id, message, sender)
+	-- from: in_game.gui_script
+	if message_id == hash("generate_question") then
+		print ("answer: ", get_question(self))
+		msg.post("/go_in_game#in_game", "set_answer", { answer = self.pick, question = self.quest })
+	end
+	-- from: this script, in_game.gui_script
+	if message_id == hash("reset_timer") then
+		-- setting timer
+		if area_level == 2 then
+			self.timer = 9
+		elseif area_level == 3 then
+			self.timer = 8
+		elseif area_level == 4 then
+			self.timer = 7
+		elseif area_level == 5 then
+			self.timer = 6
+		end
+		msg.post("/go_in_game#in_game", "set_timer", {timer = self.timer})
+	end
+end
+
+		
